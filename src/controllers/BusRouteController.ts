@@ -73,3 +73,43 @@ try {
     });
 }
 };
+
+
+export const assignRoute = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber } = req.params;
+    const { routeStops } = req.body;
+
+    try {
+        if (!Array.isArray(routeStops) || routeStops.length === 0) {
+            return res.status(400).json({ error: 'Invalid route stops data. Please provide a non-empty array.' });
+    }
+
+        const bus = await BusRouteModel.findOne({ busNumber });
+
+    if (!bus) {
+        return res.status(404).json({ error: 'Bus not found' });
+    }  
+        bus.routeStops = routeStops;  
+        await bus.save();
+        res.status(200).json({ message: 'Route stops updated successfully', bus });
+    } catch (error: any) {  
+        res.status(500).json({ message: 'An error occurred while updating route stops', error: error.message });
+    }
+};
+
+export const deleteBusRoute = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber, routeNumber } = req.params;
+try {
+    const busRoute = await BusRouteModel.findOneAndDelete({ busNumber, routeNumber });
+    if (!busRoute) {
+        return res.status(404).json({ message: 'Bus route not found' });
+    }
+        res.status(200).json({ message: 'Bus route deleted successfully' });
+} catch (error: any) {  
+    res.status(500).json({
+        message: 'An error occurred while deleting the bus route.',
+        error: error.message || 'Internal Server Error',
+    });
+}
+};
+

@@ -23,7 +23,11 @@ const busRouteSchema = new Schema<BusRoute>(
     routeStops: {
         type: [String],
         default: [],
-    },  
+    }, 
+    // fareDetails: {
+    //     type: [Number],
+    //     default: [], // Stores the fare for each stop or between stops
+    // }, 
 },
     { timestamps: true }
 );

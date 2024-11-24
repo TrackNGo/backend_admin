@@ -6,6 +6,7 @@ interface BusRoute extends Document {
     startLocation: string
     endLocation: string
     routeStops: string[]
+    // fareDetails: number[]
 }
 
 export default BusRoute

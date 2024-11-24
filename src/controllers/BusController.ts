@@ -148,6 +148,51 @@ try {
 }
 };
 
+// Update bus details by bus number
+export const updateBusDetails = async (req: Request, res: Response): Promise<any> => {
+const { busNumber } = req.params; 
+const updateData = req.body; 
+
+try {
+    // Validate required fields
+    if (!busNumber) {
+        return res.status(400).json({ message: "Bus number is required for update" });
+    }
+
+    // Check if the bus exists
+    const bus = await BusModel.findOne({ busNumber });
+    if (!bus) {
+        return res.status(404).json({ message: "Bus not found" });
+    }
+
+    // Update the bus details
+    const updatedBus = await BusModel.findOneAndUpdate({ busNumber }, updateData, {
+        new: true, 
+        runValidators: true, 
+    });
+
+    if (updateData.startLocation || updateData.endLocation || updateData.routeNumber || updateData.status) {
+        await BusRouteModel.findOneAndUpdate(
+        { busNumber },
+        {
+            ...(updateData.startLocation && { startLocation: updateData.startLocation }),
+            ...(updateData.endLocation && { endLocation: updateData.endLocation }),
+            ...(updateData.routeNumber && { routeNumber: updateData.routeNumber }),
+            ...(updateData.status && { status: updateData.status }),
+        },
+        { new: true, runValidators: true }
+    );
+    }
+
+    res.status(200).json({message: "Bus details updated successfully",bus: updatedBus,
+    });
+} catch (error: any) {
+    res.status(500).json({message: "An error occurred while updating bus details.",error: error.message || "Internal Server Error",
+    });
+}
+};
+
+
 // Delete bus by bus number
 export const deleteBusByBusNumber = async (req: Request,res: Response): Promise<any> => {
     const { busNumber } = req.params;

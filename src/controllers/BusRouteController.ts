@@ -41,3 +41,35 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
     });
     }
 };
+
+
+export const getBusRoute = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber, routeNumber } = req.params;
+    try {
+        const busRoute = await BusRouteModel.findOne({ busNumber, routeNumber });
+    if (!busRoute) {
+        return res.status(404).json({ message: 'Bus route not found' });
+    }
+        res.status(200).json(busRoute);
+    } catch (error: any) {
+    res.status(500).json({message: 'An error occurred while fetching the bus route.',error: error.message || 'Internal Server Error',
+    });
+    }
+};
+
+export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber, routeNumber } = req.params;
+    const updates = req.body;
+try {
+        const busRoute = await BusRouteModel.findOneAndUpdate({ busNumber, routeNumber }, updates, { new: true });
+    if (!busRoute) {
+        return res.status(404).json({ message: 'Bus route not found' });
+    }
+        res.status(200).json({ message: 'Bus route updated successfully', busRoute });
+} catch (error: any) {
+    res.status(500).json({
+        message: 'An error occurred while updating the bus route.',
+        error: error.message || 'Internal Server Error',
+    });
+}
+};

@@ -5,6 +5,10 @@ import dotenv from 'dotenv'
 import userRoutes from './routes/UserRoute'
 import authRoutes from './routes/AuthRoute'
 import busRoutes from './routes/BusRoute'
+import busRouteRoutes from './routes/BusRoutesRoute'
+import busFare from './routes/FareRoute'
+import { AuthMiddleware } from './middleware/AuthMiddleware'
+
 
 dotenv.config()
 const app = express()
@@ -20,6 +24,8 @@ app.use('/api-bus', busRoutes)
 app.use('/api-busroutes', busRouteRoutes)
 // app.use('/api-busFare', busFare)
 
+// Middleware set
+//app.use(AuthMiddleware)
 
 
 app.listen(PORT,()=>{

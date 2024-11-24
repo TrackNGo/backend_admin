@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 
 import userRoutes from './routes/UserRoute'
 import authRoutes from './routes/AuthRoute'
+import busRoutes from './routes/BusRoute'
 
 dotenv.config()
 const app = express()
@@ -15,6 +16,7 @@ connectDB()
 
 app.use('/api-user', authRoutes)
 app.use('/api-user', userRoutes)
+app.use('/api-bus', busRoutes)
 
 
 

@@ -17,6 +17,8 @@ connectDB()
 app.use('/api-user', authRoutes)
 app.use('/api-user', userRoutes)
 app.use('/api-bus', busRoutes)
+app.use('/api-busroutes', busRouteRoutes)
+// app.use('/api-busFare', busFare)
 
 
 

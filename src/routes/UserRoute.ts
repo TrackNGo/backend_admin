@@ -7,10 +7,10 @@ const router = express.Router()
 router.post("/", createUser)
 
 // Get all users
-router.get("/user", getAllUsers)
+router.get("/users", getAllUsers)
 
 // Get a specific user by ID, NIC, or username
-router.get("/user/:parm", getUser)
+router.get("/user/:param", getUser)
 
 // Update a specific user by ID, NIC, or username
 router.put("/:param", updateUser)

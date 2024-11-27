@@ -4,10 +4,10 @@ import { getAllBuses, addBus, deleteBusByBusNumber, getBusByBusNumber,updateBusD
 const router = express.Router()
 
 // Get all buses
-router.get('/getAllbuses', getAllBuses)
+router.get('/buses', getAllBuses)
 
 // Add a bus
-router.post('/addBus', addBus)
+router.post('/buses', addBus)
 
 // Route to get bus by busNumber
 router.get('/bus/:busNumber', getBusByBusNumber)

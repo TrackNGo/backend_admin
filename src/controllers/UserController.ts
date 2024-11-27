@@ -5,12 +5,29 @@ import bcrypt from 'bcryptjs';
 // Check mongoDB id
 const isValidObjectId = (id: string): boolean => /^[0-9a-fA-F]{24}$/.test(id);
 
+// Validate mobile number format
+const isValidMobileNumber = (mobile: string): boolean => /^07\d{8}$/.test(mobile);
+
+// Validate password strength
+const isValidPassword = (password: string): boolean =>
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password);
+
 // Filter object
+// const generateFilter = (param: string) => {
+//     if (isValidObjectId(param)) {
+//         return { _id: param }; // Filter by MongoDB ObjectID
+//     } else {
+//         return { $or: [{ nic: param }, { username: param }] }; // NIC or Username
+//     }
+// };
+
 const generateFilter = (param: string) => {
     if (isValidObjectId(param)) {
-        return { _id: param }; // Filter by MongoDB ObjectID
+      return { _id: param }; // Filter by MongoDB ObjectId
+    } else if (/^\d{9}[Vv]$/.test(param)) {
+      return { nic: param }; // Filter by NIC (e.g., "123456789V")
     } else {
-        return { $or: [{ nic: param }, { username: param }] }; // NIC or Username
+      return { username: param }; // Filter by username
     }
 };
 
@@ -27,15 +44,30 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     try {
         const { password, ...otherData } = req.body;
 
-        if (!password) {
-            res.status(400).json({ error: "Password is required" });
+        if ( !otherData.username || !otherData.nic || !otherData.firstName || !otherData.lastName || !otherData.mobile || !otherData.accType) {
+            res.status(400).json({ error: "Missing required field" });
             return;
         }
 
-        if(password.length < 8){
-            res.status(400).json({ error: "Password must be at least 8 characters long" });
+        if (!password) {
+            res.status(400).json({ error: "Missing Password Field" });
             return;
         }
+
+        // Validate password strength
+    if (!isValidPassword(password)) {
+        res.status(400).json({
+          error: "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.",
+        });
+        return;
+      }
+  
+      // Validate mobile number format
+      if (!isValidMobileNumber(otherData.mobile)) {
+        res.status(400).json({ error: "Invalid mobile number format. Mobile number must start with '07' and contain 10 digits." });
+        return;
+      }
+
 
         const existingUser = await UserModel.findOne({
             $or: [{ username: otherData.username }, { nic: otherData.nic }],
@@ -54,7 +86,8 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
         res.status(201).json({ message: "User created successfully", user: newUser });
     } catch (error: any) {
-        res.status(500).json({ error: "Internal server error" });
+        // console.log(error)
+        res.status(500).json( error.message); // Error will be displayed as Json
     }
 };
 

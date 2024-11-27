@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import UserModel from "../models/UserModel";
 import bcrypt from 'bcryptjs';
 
+// User controllers and Login has been tested and documented 
 // Check mongoDB id
 const isValidObjectId = (id: string): boolean => /^[0-9a-fA-F]{24}$/.test(id);
 

@@ -8,8 +8,9 @@ import busRoutes from './routes/BusRoute'
 import busRouteRoutes from './routes/BusRoutesRoute'
 import busFare from './routes/FareRoute'
 import lostnFound from './routes/LostnFoundRoute'
-import { AuthMiddleware } from './middleware/AuthMiddleware'
+import busTimeTable from './routes/TimeTableRoute'
 
+import { AuthMiddleware } from './middleware/AuthMiddleware'
 
 dotenv.config()
 const app = express()
@@ -24,6 +25,7 @@ app.use('/api-user', userRoutes)
 app.use('/api-bus', busRoutes)
 app.use('/api-busroutes', busRouteRoutes)
 app.use('/api-lostnFound', lostnFound)
+app.use('/api-bustimetable',busTimeTable)
 // app.use('/api-busFare', busFare)
 
 // Middleware set

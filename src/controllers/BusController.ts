@@ -89,7 +89,7 @@ export const addBus = async (req: Request, res: Response): Promise<any> => {
             !fareEstimate ||
             !type
         ) {
-            return res.status(400).json({ message: "All fields except are required" });
+            return res.status(400).json({ message: "Missing required fields" });
         }
 
         // Check if the bus number already exists

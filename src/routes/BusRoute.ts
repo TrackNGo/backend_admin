@@ -7,7 +7,7 @@ const router = express.Router()
 router.get('/buses', getAllBuses)
 
 // Add a bus
-router.post('/buses', addBus)
+router.post('/bus', addBus)
 
 // Route to get bus by busNumber
 router.get('/bus/:busNumber', getBusByBusNumber)

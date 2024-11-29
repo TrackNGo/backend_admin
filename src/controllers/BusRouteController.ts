@@ -51,9 +51,9 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
 
 
 export const getBusRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, routeNumber } = req.params;
+    const { busNumber} = req.params;
     try {
-        const busRoute = await BusRouteModel.findOne({ busNumber, routeNumber });
+        const busRoute = await BusRouteModel.findOne({ busNumber});
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }

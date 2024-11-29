@@ -9,11 +9,14 @@ import busRouteRoutes from './routes/BusRoutesRoute'
 import busFare from './routes/FareRoute'
 import lostnFound from './routes/LostnFoundRoute'
 import busTimeTable from './routes/TimeTableRoute'
+import cors from 'cors'
 
 import { AuthMiddleware } from './middleware/AuthMiddleware'
 
 dotenv.config()
 const app = express()
+
+app.use(cors())
 app.use(express.json())
 
 const PORT= process.env.PORT || 3000

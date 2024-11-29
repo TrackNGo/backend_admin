@@ -24,50 +24,42 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
 };
 
 // Get bus by bus number
-export const getBusByBusNumber = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber } = req.params;
+export const getBusByBusNumber = async (req: Request, res: Response): Promise<void> => {
+    const { busNumber } = req.params
 
     try {
         // Validate busNumber parameter
         if (!busNumber) {
-            return res.status(400).json({ message: "Bus number is required" });
+            res.status(400).json({ message: "Bus number is required" })
+            return
         }
 
         // Find the bus by busNumber
-        const bus = await BusModel.findOne({ busNumber });
-
+        const bus = await BusModel.findOne({ busNumber })
         if (!bus) {
-            return res.status(404).json({ message: "Bus not found" });
+            res.status(404).json({ message: "Bus not found" })
+            return
         }
 
-        // Find the associated bus route by busNumber
-        const busRoute = await BusRouteModel.findOne({ busNumber });
-
-        // Check if busRoute exists
-        if (!busRoute) {
-            return res.status(404).json({ message: "Bus route not found for this bus" });
-        }
-
-        // Return the bus and bus route data
-        res.status(200).json({ bus, busRoute, });
+        // Return the bus data
+        res.status(200).json(bus)
     } catch (error: any) {
-        // Log the error for debugging purposes
-        console.error("Error fetching bus details:", error);
+        console.error("Error fetching bus details:", error)
 
-        // Handle database or other unexpected errors
+        // Handle specific errors
         if (error.name === "CastError") {
-            return res.status(400).json({ message: "Invalid bus number format" });
+            res.status(400).json({ message: "Invalid bus number format" })
+        } else if (error.name === "MongoNetworkError") {
+            res.status(503).json({ message: "Database is currently unavailable. Please try again later." })
+        } else {
+            // Generic error response
+            res.status(500).json({
+                message: "An error occurred while fetching bus details",
+                error: error.message || "Internal Server Error",
+            })
         }
-        if (error.name === "MongoNetworkError") {
-            return res.status(503).json({ message: "Database is currently unavailable. Please try again later." });
-        }
-
-        // Send a generic error message for other types of errors
-        res.status(500).json({
-            message: "An error occurred while fetching bus details.", error: error.message || "Internal Server Error",
-        });
     }
-};
+}
 
 // Add bus
 export const addBus = async (req: Request, res: Response): Promise<any> => {

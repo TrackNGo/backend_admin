@@ -10,7 +10,7 @@ router.get('/bus/route', getAllBuses)
 router.post('/bus/route', createBusRoute);
 
 // Route to get a specific bus route by bus number and route number
-router.get('/:busNumber/:routeNumber', getBusRoute);
+router.get('/busRoute/:busNumber', getBusRoute);
 
 // Route to update a specific bus route by bus number and route number
 router.put('/:busNumber/:routeNumber', updateBusRoute);

@@ -274,3 +274,42 @@ export const deleteBusByBusNumber = async (req: Request, res: Response): Promise
         });
     }
 };
+
+//get buses by bus route number
+export const getBusesByRouteNumber = async (req: Request, res: Response): Promise<void> => {
+    const { routeNumber } = req.params
+
+    try {
+        // Validate routeNumber parameter
+        if (!routeNumber) {
+            res.status(400).json({ message: "Route number is required" })
+            return
+        }
+
+        // Find buses by routeNumber
+        const buses = await BusModel.find({ routeNumber })
+        if (buses.length === 0) {
+            res.status(404).json({ message: "No buses found for this route number" })
+            return
+        }
+
+        // Return the list of buses
+        res.status(200).json(buses)
+    } catch (error: any) {
+        console.error("Error fetching buses by route number:", error)
+
+        // Handle specific errors
+        if (error.name === "CastError") {
+            res.status(400).json({ message: "Invalid route number format" })
+        } else if (error.name === "MongoNetworkError") {
+            res.status(503).json({ message: "Database is currently unavailable. Please try again later." })
+        } else {
+            // Generic error response
+            res.status(500).json({
+                message: "An error occurred while fetching buses by route number",
+                error: error.message || "Internal Server Error",
+            })
+        }
+    }
+}
+

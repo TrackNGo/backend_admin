@@ -29,18 +29,22 @@ export const createBusRoute = async (req: Request, res: Response): Promise<any> 
 //Get all buses with routes
 export const getAllBuses = async (req: Request, res: Response): Promise<any> => {
     try {
-        const buses = await BusRouteModel.find();
+        // Attempt to fetch all buses from the BusRouteModel
+        const buses = await BusRouteModel.find()
+
+        // If no buses are found, send a 404 response with a message
         if (!buses || buses.length === 0) {
-            return res.status(404).json({ message: 'No buses found' });
+            return res.status(404).json({ message: 'No buses found' })
         }
 
-        return res.status(200).json(buses);
+        // Send the list of buses as a response
+        return res.status(200).json(buses)
     } catch (error: any) {
         res.status(500).json({
             message: 'An error occurred while fetching the buses.', error: error.message || 'Internal Server Error',
-        });
+        })
     }
-};
+}
 
 
 export const getBusRoute = async (req: Request, res: Response): Promise<any> => {
@@ -76,27 +80,41 @@ export const updateBusRoute = async (req: Request, res: Response): Promise<any> 
 };
 
 
+// Assign bus route for bus using bus number
 export const assignRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber } = req.params;
-    const { routeStops } = req.body;
+    const { busNumber, routeStops } = req.body
 
     try {
+        // Ensure routeStops is provided and is an array
         if (!Array.isArray(routeStops) || routeStops.length === 0) {
-            return res.status(400).json({ error: 'Invalid route stops data. Please provide a non-empty array.' });
+            return res.status(400).json({ error: 'Invalid route stops data. Please provide a non-empty array.' })
         }
 
-        const bus = await BusRouteModel.findOne({ busNumber });
+        // Find the bus by its busNumber
+        const bus = await BusRouteModel.findOne({ busNumber })
 
+        // If the bus is not found, return an error response
         if (!bus) {
-            return res.status(404).json({ error: 'Bus not found' });
+            return res.status(404).json({ error: 'Bus not found' })
         }
-        bus.routeStops = routeStops;
-        await bus.save();
-        res.status(200).json({ message: 'Route stops updated successfully', bus });
+
+        // Update the bus's routeStops with the new value
+        bus.routeStops = routeStops
+
+        // Save the updated bus document
+        await bus.save()
+
+        // Return success response with the updated bus details
+        res.status(200).json({ message: 'Route stops updated successfully', bus })
     } catch (error: any) {
-        res.status(500).json({ message: 'An error occurred while updating route stops', error: error.message });
+        // Log the error for debugging purposes
+        console.error('Error updating route stops:', error)
+
+        // Handle database-related errors or unexpected issues
+        res.status(500).json({ message: 'An error occurred while updating route stops', error: error.message })
     }
-};
+}
+
 
 export const deleteBusRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber, routeNumber } = req.params;

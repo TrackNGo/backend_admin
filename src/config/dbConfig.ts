@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
     try {
-        const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/trackngo_admin';
+        const mongoURI = process.env.MONGO_URI || '';
 
         if (!process.env.MONGO_URI) {
             console.warn("MONGO_URI not set.");

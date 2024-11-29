@@ -16,7 +16,7 @@ router.get('/:busNumber/:routeNumber', getBusRoute);
 router.put('/:busNumber/:routeNumber', updateBusRoute);
 
 // Route to delete a specific bus route by bus number and route number
-router.delete('/busRoute/:busNumber/:routeNumber', deleteBusRoute);
+router.delete('/:busNumber/:routeNumber', deleteBusRoute);
 
 // Assign to route for buses
 router.put('/assign-route', assignRoute)

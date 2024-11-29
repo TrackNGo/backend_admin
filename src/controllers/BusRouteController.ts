@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import BusRouteModel from '../models/BusRouteModel'
 
+// @note bus route controllers tested and documentation created
+
 export const createBusRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber, routeNumber, startLocation, endLocation, routeStops } = req.body;
     try {
@@ -112,6 +114,7 @@ export const getBusRoute = async (req: Request, res: Response): Promise<any> => 
 //     }
 // };
 
+// @note Take index from req body for the routeStops array
 export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber, routeNumber } = req.params;
     const updates = req.body;

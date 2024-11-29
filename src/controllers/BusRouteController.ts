@@ -65,62 +65,43 @@ export const getBusRouteByBusNumber = async (req: Request, res: Response): Promi
     }
 };
 
-// export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
-//     const { busNumber, routeNumber } = req.params;
-//     const updates = req.body;
-
-//     try {
-//         // Validate required parameters
-//         if (!busNumber || !routeNumber) {
-//             return res.status(400).json({ message: 'Bus number and route number are required' });
-//         }
-
-//         // Validate request body
-//         if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) {
-//             return res.status(400).json({ message: 'No valid fields provided to update' });
-//         }
-
-//         // Define allowed fields for updates
-//         const allowedFields = ['startLocation', 'endLocation', 'routeStops'];
-//         const validUpdates = Object.keys(updates).reduce((acc: any, key) => {
-//             if (allowedFields.includes(key)) {
-//                 acc[key] = updates[key];
-//             }
-//             return acc;
-//         }, {});
-
-//         // If no valid fields are present, return an error
-//         if (Object.keys(validUpdates).length === 0) {
-//             return res.status(400).json({ message: 'No valid fields to update' });
-//         }
-
-//         // Find and update the bus route
-//         const busRoute = await BusRouteModel.findOneAndUpdate(
-//             { busNumber, routeNumber },
-//             validUpdates,
-//             { new: true, runValidators: true }
-//         );
-
-//         if (!busRoute) {
-//             return res.status(404).json({ message: 'Bus route not found' });
-//         }
-
-//         res.status(200).json({ message: 'Bus route updated successfully', busRoute });
-//     } catch (error: any) {
-//         res.status(500).json({
-//             message: 'An error occurred while updating the bus route.',
-//             error: error.message || 'Internal Server Error',
-//         });
-//     }
-// };
-
-// @note Take index from req body for the routeStops array
+/*
 export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber } = req.params;
     const updates = req.body;
 
     try {
-        const busRoute = await BusRouteModel.findOneAndUpdate({ busNumber, routeNumber }, updates, { new: true });
+        // Validate required parameters
+        if (!busNumber) {
+            return res.status(400).json({ message: 'Bus number required' });
+        }
+
+        // Validate request body
+        if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: 'No valid fields provided to update' });
+        }
+
+        // Define allowed fields for updates
+        const allowedFields = ['startLocation', 'endLocation', 'routeStops'];
+        const validUpdates = Object.keys(updates).reduce((acc: any, key) => {
+            if (allowedFields.includes(key)) {
+                acc[key] = updates[key];
+            }
+            return acc;
+        }, {});
+
+        // If no valid fields are present, return an error
+        if (Object.keys(validUpdates).length === 0) {
+            return res.status(400).json({ message: 'No valid fields to update' });
+        }
+
+        // Find and update the bus route
+        const busRoute = await BusRouteModel.findOneAndUpdate(
+            { busNumber, routeNumber },
+            validUpdates,
+            { new: true, runValidators: true }
+        );
+
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }
@@ -132,7 +113,54 @@ export const updateBusRoute = async (req: Request, res: Response): Promise<any> 
             error: error.message || 'Internal Server Error',
         });
     }
-};
+};*/
+
+// @note Take index from req body for the routeStops array
+// update bus route
+export const updateBusRouteByBusNumber = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber } = req.params // Extract busNumber from the route params
+    const updates = req.body // Extract updates from the request body
+
+    try {
+        // Validate updates: Define allowed update fields
+        const allowedFields = ['routeNumber', 'startLocation', 'endLocation', 'routeStops']
+        const filteredUpdates: Partial<Record<string, any>> = {}
+
+        Object.keys(updates).forEach((key) => {
+            if (allowedFields.includes(key)) {
+                filteredUpdates[key] = updates[key]
+            }
+        })
+
+        if (Object.keys(filteredUpdates).length === 0) {
+            return res.status(400).json({ message: "No valid fields provided for update." })
+        }
+
+        // Perform the update
+        const updatedBusRoute = await BusRouteModel.findOneAndUpdate(
+            { busNumber: busNumber.trim() }, // Ensure busNumber is trimmed and matches
+            filteredUpdates,
+            { new: true, runValidators: true } // Return the updated document and run validation
+        )
+
+        if (!updatedBusRoute) {
+            return res.status(404).json({ message: `Bus route with busNumber '${busNumber}' not found.` })
+        }
+
+        // Respond with the updated bus route
+        res.status(200).json({
+            message: "Bus route updated successfully.",
+            busRoute: updatedBusRoute,
+        })
+    } catch (error: any) {
+        console.error("Error updating bus route:", error.message)
+        res.status(500).json({
+            message: "An error occurred while updating the bus route.",
+            error: error.message || "Internal Server Error",
+        })
+    }
+}
+
 
 // Assign bus route for bus using bus number
 export const assignRoute = async (req: Request, res: Response): Promise<any> => {
@@ -170,7 +198,7 @@ export const assignRoute = async (req: Request, res: Response): Promise<any> => 
 }
 
 
-export const deleteBusRoute = async (req: Request, res: Response): Promise<any> => {
+export const deleteBusRouteByBusNumber = async (req: Request, res: Response): Promise<any> => {
     const { busNumber } = req.params;
     try {
         const busRoute = await BusRouteModel.findOneAndDelete({ busNumber });

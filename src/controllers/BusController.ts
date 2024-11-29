@@ -7,7 +7,7 @@ import BusRouteModel from "../models/BusRouteModel";
 // Get all bus
 export const getAllBuses = async (req: Request, res: Response): Promise<any> => {
     try {
-        const buses = await BusModel.find();
+        const buses = await BusModel.find().sort({ updatedAt: -1 }); // Sorting by the latest order (newest first)
 
         // Check if buses are found
         if (!buses || buses.length === 0) {
@@ -18,10 +18,11 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
     } catch (error: any) {
         // Send a detailed error response to the client
         res.status(500).json({
-            message: "An error occurred while fetching buses.", error: error.message || "Internal Server Error",
+            message: "An error occurred while fetching buses.",
+            error: error.message || "Internal Server Error",
         });
     }
-};
+}
 
 // Get bus by bus number
 export const getBusByBusNumber = async (req: Request, res: Response): Promise<void> => {
@@ -313,3 +314,34 @@ export const getBusesByRouteNumber = async (req: Request, res: Response): Promis
     }
 }
 
+
+//bus status update
+export const updateBusStatus = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber } = req.params; // Bus number from the URL
+    const { status } = req.body; // New status from the request body
+
+    try {
+        // Validate the status field
+        if (typeof status !== 'boolean') {
+            return res.status(400).json({ error: 'Invalid status value. It must be true or false.' });
+        }
+
+        // Find the bus by busNumber and update its status
+        const bus = await BusModel.findOneAndUpdate(
+            { busNumber },
+            { status },
+            { new: true } // Return the updated document
+        );
+
+        // If the bus is not found, return an error
+        if (!bus) {
+            return res.status(404).json({ error: 'Bus not found' });
+        }
+
+        // Return the updated bus details
+        res.status(200).json({ message: 'Bus status updated successfully', bus });
+    } catch (error: any) {
+        console.error('Error updating bus status:', error);
+        res.status(500).json({ error: 'An error occurred while updating bus status', details: error.message });
+    }
+}

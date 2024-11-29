@@ -156,10 +156,40 @@ export const updateBusDetails = async (req: Request, res: Response): Promise<any
     const { busNumber } = req.params;
     const updateData = req.body;
 
+    // Define the allowed fields for validation
+    const allowedFields = [
+        "startLocation",
+        "endLocation",
+        "routeNumber",
+        "fareEstimate",
+        "type",
+        "status"
+    ];
+
     try {
         // Validate required fields
         if (!busNumber) {
             return res.status(400).json({ message: "Bus number is required for update" });
+        }
+
+        if (!updateData || Object.keys(updateData).length === 0) {
+            return res.status(400).json({ message: "Missing updating data" });
+        }
+
+        // Filter out invalid fields from the request body
+        const validUpdateData: Record<string, any> = {};
+        for (const key in updateData) {
+            if (allowedFields.includes(key)) {
+                validUpdateData[key] = updateData[key];
+            }
+        }
+
+        // Check if there are valid fields to update
+        if (Object.keys(validUpdateData).length === 0) {
+            return res.status(400).json({
+                message: "No valid fields provided for update",
+                allowedFields,
+            });
         }
 
         // Check if the bus exists
@@ -169,30 +199,42 @@ export const updateBusDetails = async (req: Request, res: Response): Promise<any
         }
 
         // Update the bus details
-        const updatedBus = await BusModel.findOneAndUpdate({ busNumber }, updateData, {
-            new: true,
-            runValidators: true,
-        });
+        const updatedBus = await BusModel.findOneAndUpdate(
+            { busNumber },
+            validUpdateData,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
 
-        if (updateData.startLocation || updateData.endLocation || updateData.routeNumber || updateData.status) {
+        // Update associated BusRoute if relevant fields are provided
+        if (
+            validUpdateData.startLocation ||
+            validUpdateData.endLocation ||
+            validUpdateData.routeNumber ||
+            validUpdateData.status
+        ) {
             await BusRouteModel.findOneAndUpdate(
                 { busNumber },
                 {
-                    ...(updateData.startLocation && { startLocation: updateData.startLocation }),
-                    ...(updateData.endLocation && { endLocation: updateData.endLocation }),
-                    ...(updateData.routeNumber && { routeNumber: updateData.routeNumber }),
-                    ...(updateData.status && { status: updateData.status }),
+                    ...(validUpdateData.startLocation && { startLocation: validUpdateData.startLocation }),
+                    ...(validUpdateData.endLocation && { endLocation: validUpdateData.endLocation }),
+                    ...(validUpdateData.routeNumber && { routeNumber: validUpdateData.routeNumber }),
+                    ...(validUpdateData.status && { status: validUpdateData.status }),
                 },
                 { new: true, runValidators: true }
             );
         }
 
         res.status(200).json({
-            message: "Bus details updated successfully", bus: updatedBus,
+            message: "Bus details updated successfully",
+            bus: updatedBus,
         });
     } catch (error: any) {
         res.status(500).json({
-            message: "An error occurred while updating bus details.", error: error.message || "Internal Server Error",
+            message: "An error occurred while updating bus details.",
+            error: error.message || "Internal Server Error",
         });
     }
 };

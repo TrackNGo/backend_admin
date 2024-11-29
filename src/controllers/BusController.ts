@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import BusModel from "../models/BusModel";
 import BusRouteModel from "../models/BusRouteModel";
 
+// @note tested the code and created documentation
+
 // Get all bus
 export const getAllBuses = async (req: Request, res: Response): Promise<any> => {
     try {

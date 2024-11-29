@@ -49,21 +49,38 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
     }
 }
 
-
+//get bus by bus number
 export const getBusRouteByBusNumber = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber } = req.params;
+    const { busNumber } = req.params
     try {
-        const busRoute = await BusRouteModel.findOne({ busNumber });
+        const busRoute = await BusRouteModel.findOne({ busNumber })
         if (!busRoute) {
-            return res.status(404).json({ message: 'Bus route not found' });
+            return res.status(404).json({ message: 'Bus route not found' })
         }
-        res.status(200).json(busRoute);
+        res.status(200).json(busRoute)
     } catch (error: any) {
         res.status(500).json({
             message: 'An error occurred while fetching the bus route.', error: error.message || 'Internal Server Error',
         });
     }
-};
+}
+
+//get bus by bus route number
+export const getBusesByRouteNumber = async (req: Request, res: Response): Promise<any> => {
+    const { routeNumber } = req.params
+    try {
+        const busRoutes = await BusRouteModel.find({ routeNumber })
+        if (busRoutes.length === 0) {
+            return res.status(404).json({ message: 'No buses found for this route number' })
+        }
+        res.status(200).json(busRoutes)
+    } catch (error: any) {
+        res.status(500).json({
+            message: 'An error occurred while fetching buses for the route.',
+            error: error.message || 'Internal Server Error',
+        })
+    }
+}
 
 /*
 export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {

@@ -7,7 +7,7 @@ import BusRouteModel from "../models/BusRouteModel";
 // Get all bus
 export const getAllBuses = async (req: Request, res: Response): Promise<any> => {
     try {
-        const buses = await BusModel.find();
+        const buses = await BusModel.find().sort({ updatedAt: -1 }); // Sorting by the latest order (newest first)
 
         // Check if buses are found
         if (!buses || buses.length === 0) {
@@ -18,10 +18,11 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
     } catch (error: any) {
         // Send a detailed error response to the client
         res.status(500).json({
-            message: "An error occurred while fetching buses.", error: error.message || "Internal Server Error",
+            message: "An error occurred while fetching buses.",
+            error: error.message || "Internal Server Error",
         });
     }
-};
+}
 
 // Get bus by bus number
 export const getBusByBusNumber = async (req: Request, res: Response): Promise<void> => {
@@ -274,3 +275,73 @@ export const deleteBusByBusNumber = async (req: Request, res: Response): Promise
         });
     }
 };
+
+//get buses by bus route number
+export const getBusesByRouteNumber = async (req: Request, res: Response): Promise<void> => {
+    const { routeNumber } = req.params
+
+    try {
+        // Validate routeNumber parameter
+        if (!routeNumber) {
+            res.status(400).json({ message: "Route number is required" })
+            return
+        }
+
+        // Find buses by routeNumber
+        const buses = await BusModel.find({ routeNumber })
+        if (buses.length === 0) {
+            res.status(404).json({ message: "No buses found for this route number" })
+            return
+        }
+
+        // Return the list of buses
+        res.status(200).json(buses)
+    } catch (error: any) {
+        console.error("Error fetching buses by route number:", error)
+
+        // Handle specific errors
+        if (error.name === "CastError") {
+            res.status(400).json({ message: "Invalid route number format" })
+        } else if (error.name === "MongoNetworkError") {
+            res.status(503).json({ message: "Database is currently unavailable. Please try again later." })
+        } else {
+            // Generic error response
+            res.status(500).json({
+                message: "An error occurred while fetching buses by route number",
+                error: error.message || "Internal Server Error",
+            })
+        }
+    }
+}
+
+
+//bus status update
+export const updateBusStatus = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber } = req.params; // Bus number from the URL
+    const { status } = req.body; // New status from the request body
+
+    try {
+        // Validate the status field
+        if (typeof status !== 'boolean') {
+            return res.status(400).json({ error: 'Invalid status value. It must be true or false.' });
+        }
+
+        // Find the bus by busNumber and update its status
+        const bus = await BusModel.findOneAndUpdate(
+            { busNumber },
+            { status },
+            { new: true } // Return the updated document
+        );
+
+        // If the bus is not found, return an error
+        if (!bus) {
+            return res.status(404).json({ error: 'Bus not found' });
+        }
+
+        // Return the updated bus details
+        res.status(200).json({ message: 'Bus status updated successfully', bus });
+    } catch (error: any) {
+        console.error('Error updating bus status:', error);
+        res.status(500).json({ error: 'An error occurred while updating bus status', details: error.message });
+    }
+}

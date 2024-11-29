@@ -47,10 +47,10 @@ export const getAllBuses = async (req: Request, res: Response): Promise<any> => 
 }
 
 
-export const getBusRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber} = req.params;
+export const getBusRouteByBusNumber = async (req: Request, res: Response): Promise<any> => {
+    const { busNumber } = req.params;
     try {
-        const busRoute = await BusRouteModel.findOne({ busNumber});
+        const busRoute = await BusRouteModel.findOne({ busNumber });
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }
@@ -63,10 +63,10 @@ export const getBusRoute = async (req: Request, res: Response): Promise<any> => 
 };
 
 export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, routeNumber } = req.params;
+    const { busNumber } = req.params;
     const updates = req.body;
     try {
-        const busRoute = await BusRouteModel.findOneAndUpdate({ busNumber, routeNumber }, updates, { new: true });
+        const busRoute = await BusRouteModel.findOneAndUpdate({ busNumber }, updates, { new: true });
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }
@@ -78,7 +78,6 @@ export const updateBusRoute = async (req: Request, res: Response): Promise<any> 
         });
     }
 };
-
 
 // Assign bus route for bus using bus number
 export const assignRoute = async (req: Request, res: Response): Promise<any> => {
@@ -117,9 +116,9 @@ export const assignRoute = async (req: Request, res: Response): Promise<any> => 
 
 
 export const deleteBusRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, routeNumber } = req.params;
+    const { busNumber } = req.params;
     try {
-        const busRoute = await BusRouteModel.findOneAndDelete({ busNumber, routeNumber });
+        const busRoute = await BusRouteModel.findOneAndDelete({ busNumber });
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }

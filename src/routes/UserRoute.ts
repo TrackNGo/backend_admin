@@ -4,18 +4,18 @@ import { createUser, getUser, getAllUsers, updateUser, deleteUser, } from "../co
 const router = express.Router()
 
 // Create a new user
-router.post("/createUser", createUser)
+router.post("/", createUser)
 
 // Get all users
-router.get("/getallUser", getAllUsers)
+router.get("/users", getAllUsers)
 
 // Get a specific user by ID, NIC, or username
-router.get("/getUser/:param", getUser)
+router.get("/user/:param", getUser)
 
 // Update a specific user by ID, NIC, or username
-router.put("/updateUser/:param", updateUser)
+router.put("/:param", updateUser)
 
 // Delete a specific user by ID, NIC, or username
-router.delete("/deleteUser/:param", deleteUser)
+router.delete("/:param", deleteUser)
 
 export default router

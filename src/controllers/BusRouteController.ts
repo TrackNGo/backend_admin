@@ -1,10 +1,13 @@
 import { Request, Response } from 'express'
 import BusRouteModel from '../models/BusRouteModel'
 
+// @note bus route controllers tested and documentation created
+
 export const createBusRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber, routeNumber, startLocation, endLocation, routeStops } = req.body;
     try {
         // Validate input
+        // console.log(busNumber, routeNumber, startLocation, endLocation, routeStops)
         if (!busNumber || !routeNumber || !startLocation || !endLocation || !routeStops) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
@@ -62,14 +65,66 @@ export const getBusRouteByBusNumber = async (req: Request, res: Response): Promi
     }
 };
 
+// export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
+//     const { busNumber, routeNumber } = req.params;
+//     const updates = req.body;
+
+//     try {
+//         // Validate required parameters
+//         if (!busNumber || !routeNumber) {
+//             return res.status(400).json({ message: 'Bus number and route number are required' });
+//         }
+
+//         // Validate request body
+//         if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) {
+//             return res.status(400).json({ message: 'No valid fields provided to update' });
+//         }
+
+//         // Define allowed fields for updates
+//         const allowedFields = ['startLocation', 'endLocation', 'routeStops'];
+//         const validUpdates = Object.keys(updates).reduce((acc: any, key) => {
+//             if (allowedFields.includes(key)) {
+//                 acc[key] = updates[key];
+//             }
+//             return acc;
+//         }, {});
+
+//         // If no valid fields are present, return an error
+//         if (Object.keys(validUpdates).length === 0) {
+//             return res.status(400).json({ message: 'No valid fields to update' });
+//         }
+
+//         // Find and update the bus route
+//         const busRoute = await BusRouteModel.findOneAndUpdate(
+//             { busNumber, routeNumber },
+//             validUpdates,
+//             { new: true, runValidators: true }
+//         );
+
+//         if (!busRoute) {
+//             return res.status(404).json({ message: 'Bus route not found' });
+//         }
+
+//         res.status(200).json({ message: 'Bus route updated successfully', busRoute });
+//     } catch (error: any) {
+//         res.status(500).json({
+//             message: 'An error occurred while updating the bus route.',
+//             error: error.message || 'Internal Server Error',
+//         });
+//     }
+// };
+
+// @note Take index from req body for the routeStops array
 export const updateBusRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber } = req.params;
     const updates = req.body;
+
     try {
-        const busRoute = await BusRouteModel.findOneAndUpdate({ busNumber }, updates, { new: true });
+        const busRoute = await BusRouteModel.findOneAndUpdate({ busNumber, routeNumber }, updates, { new: true });
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }
+
         res.status(200).json({ message: 'Bus route updated successfully', busRoute });
     } catch (error: any) {
         res.status(500).json({

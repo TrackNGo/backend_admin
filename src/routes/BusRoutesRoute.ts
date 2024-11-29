@@ -4,19 +4,19 @@ import {createBusRoute, getAllBuses,getBusRouteByBusNumber,updateBusRoute,assign
 const router = express.Router()
 
 // Route to get all buses
-router.get('/getAllBusRoutes', getAllBuses)
+router.get('/bus/route', getAllBuses)
 
 // Route to create a new bus route
-router.post('/createBusRoute', createBusRoute);
+router.post('/bus/route', createBusRoute);
 
 // Route to get a specific bus route by bus number and route number
 router.get('/busRoute/:busNumber', getBusRouteByBusNumber);
 
 // Route to update a specific bus route by bus number and route number
-router.put('/busRoute/:busNumber/:routeNumber', updateBusRoute);
+router.put('/:busNumber/:routeNumber', updateBusRoute);
 
 // Route to delete a specific bus route by bus number and route number
-router.delete('/busRoute/:busNumber/:routeNumber', deleteBusRoute);
+router.delete('/:busNumber/:routeNumber', deleteBusRoute);
 
 // Assign to route for buses
 router.put('/assign-route', assignRoute)

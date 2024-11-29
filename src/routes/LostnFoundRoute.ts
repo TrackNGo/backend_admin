@@ -4,21 +4,21 @@ import {reportLostItem,reportFoundItem,getAllLostAndFoundItems,getLostAndFoundIt
 const router = express.Router();
 
 // Report a Lost Item
-router.post('/reportLostItem', reportLostItem);
+router.post('/lostitem', reportLostItem);
 
 // Report a Found Item
-router.post('/reportFoundItem', reportFoundItem);
+router.post('/founditem', reportFoundItem);
 
 // Get all Lost and Found items
-router.get('/getAllItems', getAllLostAndFoundItems);
+router.get('/items', getAllLostAndFoundItems);
 
 // Get a Lost and Found item by ID
-router.get('/getItem/:itemId', getLostAndFoundItemById);
+router.get('/item/:id', getLostAndFoundItemById);
 
 // Update a Lost and Found item by ID
-router.put('/updateItem/:itemId', updateLostAndFoundItem);
+router.put('/:id', updateLostAndFoundItem);
 
 // Delete a Lost and Found item by ID
-router.delete('/deleteItem/:itemId', deleteLostAndFoundItem);
+router.delete('/:itemId', deleteLostAndFoundItem);
 
 export default router;

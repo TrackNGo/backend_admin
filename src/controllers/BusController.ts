@@ -36,7 +36,7 @@ export const getBusByBusNumber = async (req: Request, res: Response): Promise<vo
         }
 
         // Find the bus by busNumber
-        const bus = await BusModel.findOne({ busNumber })
+        const bus = await BusModel.findOne({ busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } })
         if (!bus) {
             res.status(404).json({ message: "Bus not found" })
             return
@@ -188,7 +188,7 @@ export const updateBusDetails = async (req: Request, res: Response): Promise<any
         }
 
         // Check if the bus exists
-        const bus = await BusModel.findOne({ busNumber });
+        const bus = await BusModel.findOne({ busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } });
         if (!bus) {
             return res.status(404).json({ message: "Bus not found" });
         }
@@ -244,13 +244,13 @@ export const deleteBusByBusNumber = async (req: Request, res: Response): Promise
             return res.status(400).json({ message: "Bus number is required" });
         }
         // Check if the bus exists before attempting to delete it
-        const bus = await BusModel.findOneAndDelete({ busNumber });
+        const bus = await BusModel.findOneAndDelete({ busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } });
         if (!bus) {
             return res.status(404).json({ message: "Bus not found" });
         }
 
         // Attempt to delete the associated bus route
-        const busRoute = await BusRouteModel.findOneAndDelete({ busNumber });
+        const busRoute = await BusRouteModel.findOneAndDelete({ busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } });
         if (!busRoute) {
             return res.status(404).json({ message: "Associated bus route not found, but bus deleted successfully" });
         }

@@ -155,7 +155,7 @@ export const updateBusRouteByBusNumber = async (req: Request, res: Response): Pr
 
         // Perform the update
         const updatedBusRoute = await BusRouteModel.findOneAndUpdate(
-            { busNumber: busNumber.trim() }, // Ensure busNumber is trimmed and matches
+            { busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } }, // Ensure busNumber is trimmed and matches
             filteredUpdates,
             { new: true, runValidators: true } // Return the updated document and run validation
         )
@@ -190,7 +190,7 @@ export const assignRoute = async (req: Request, res: Response): Promise<any> => 
         }
 
         // Find the bus by its busNumber
-        const bus = await BusRouteModel.findOne({ busNumber })
+        const bus = await BusRouteModel.findOne({ busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } })
 
         // If the bus is not found, return an error response
         if (!bus) {
@@ -216,9 +216,9 @@ export const assignRoute = async (req: Request, res: Response): Promise<any> => 
 
 
 export const deleteBusRouteByBusNumber = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber } = req.params;
+    const { busNumber } = req.params
     try {
-        const busRoute = await BusRouteModel.findOneAndDelete({ busNumber });
+        const busRoute = await BusRouteModel.findOneAndDelete({ busNumber: { $regex: new RegExp(`^${busNumber}$`, 'i') } });
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus route not found' });
         }

@@ -6,27 +6,33 @@ const userSchema = new Schema<UserDetails>(
         nic: {
             type: String,
             required: true,
-        }, username: {//bus number
+        },
+        username: {//bus number
             type: String,
             required: true,
             unique: true
-        }, firstName: {
+        },
+        firstName: {
             type: String,
             required: true,
             trim: true
-        }, lastName: {
+        },
+        lastName: {
             type: String,
             required: true,
             trim: true
-        }, mobile: {
+        },
+        mobile: {
             type: String,
             required: true,
             unique: true
-        }, password: {
+        },
+        password: {
             type: String,
             required: true
-        },accType:{
-            type:String,
+        },
+        accType: {
+            type: String,
             enum: ['General', 'Admin'], default: 'General'
         }
     },
@@ -35,6 +41,6 @@ const userSchema = new Schema<UserDetails>(
     }
 )
 
-const UserModel=mongoose.model<UserDetails>('User',userSchema)
+const UserModel = mongoose.model<UserDetails>('User', userSchema)
 
 export default UserModel

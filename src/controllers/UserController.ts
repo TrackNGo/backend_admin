@@ -44,7 +44,7 @@ const generateFilterForUpdate = (param: string) => {
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { password, ...otherData } = req.body;
-
+        console.log(req.body)
         if (!otherData.username || !otherData.nic || !otherData.firstName || !otherData.lastName || !otherData.mobile || !otherData.accType) {
             res.status(400).json({ error: "Missing required field" });
             return;
@@ -71,7 +71,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
 
         const existingUser = await UserModel.findOne({
-            $or: [{ username: otherData.username }, { nic: otherData.nic }],
+            $or: [{ username: otherData.username }],
         });
         if (existingUser) {
             res.status(400).json({ error: "User with the same NIC or username already exists" });

@@ -57,3 +57,16 @@ export const Login: RequestHandler = async (req: Request, res: Response) => {
         res.status(500).json({ message: "An error occurred during login" })
     }
 };
+
+export const Logout: RequestHandler = async (req: Request, res: Response) => {
+    try {
+        // Invalidate the JWT token by clearing it client-side
+        // For example, tokens stored in cookies can be cleared:
+        res.clearCookie('token') // Assuming the token is stored in cookies
+
+        res.status(200).json({ message: "Logout successful" })
+    } catch (error) {
+        console.error("Logout error:", error)
+        res.status(500).json({ message: "An error occurred during logout" })
+    }
+}

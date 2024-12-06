@@ -1,8 +1,24 @@
-import express from 'express'
-import { getAllTimeTable } from '../controllers/TimeTableController'
+import express from "express";
+import {
+  createTimeTable,
+  deleteTimeTable,
+  getAllTimeTables,
+  getTimeTableById,
+  getTimeTableByLocations,
+  getTimeTableByRouteAndType,
+  updateTimeTable,
 
-const router=express.Router()
+} from "../controllers/TimeTableController";
 
-router.get('/gettimetable',getAllTimeTable)
+const router = express.Router();
 
-export default router
+// Time Table routes
+router.post("/add", createTimeTable);
+router.get("/view", getAllTimeTables);
+router.get("/locations", getTimeTableByLocations); // New endpoint for filtering by locations
+router.get("/bus-type", getTimeTableByRouteAndType); // New endpoint for filtering by route and type
+router.get("/:id", getTimeTableById);
+router.put("/update/:id", updateTimeTable);
+router.delete("/delete/:id", deleteTimeTable);
+
+export default router;

@@ -13,9 +13,9 @@ router.get("/users", getAllUsers)
 router.get("/user/:param", getUser)
 
 // Update a specific user by ID, NIC, or username
-router.put("/:param", updateUser)
+router.put("/update/:param", updateUser)
 
 // Delete a specific user by ID, NIC, or username
-router.delete("/:param", deleteUser)
+router.delete("/delete/:param", deleteUser)
 
 export default router

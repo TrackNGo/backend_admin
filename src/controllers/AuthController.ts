@@ -4,7 +4,7 @@ import UserModel from "../models/UserModel";
 import { generateJwt } from "../security/jwt";
 
 export const Login: RequestHandler = async (req: Request, res: Response) => {
-    const { loginIdentifier, password } = req.body;
+    const { loginIdentifier,accType, password } = req.body;
 
     try {
 
@@ -15,12 +15,17 @@ export const Login: RequestHandler = async (req: Request, res: Response) => {
 
         // Find the user by username or mobile
         const user = await UserModel.findOne({
-            $or: [
-                { username: loginIdentifier },
-                { mobile: loginIdentifier },
+            $and: [
+                {
+                    $or: [
+                        { username: loginIdentifier },
+                        { mobile: loginIdentifier },
+                    ],
+                },
+                { accType: accType },
             ],
         });
-
+        
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;

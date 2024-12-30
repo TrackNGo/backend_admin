@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllBuses, addBus, deleteBusByBusNumber, getBusByBusNumber,updateBusDetails, getBusesByRouteNumber, updateBusStatus } from '../controllers/BusController'
+import { getAllBuses, addBus, deleteBusByBusNumber, getBusByBusNumber, updateBusDetails, getBusesByRouteNumber, updateBusStatus, countTotalBuses, activeBuses ,nonActiveBuses} from '../controllers/BusController'
 
 const router = express.Router()
 
@@ -19,11 +19,16 @@ router.put('/bus/:busNumber', updateBusDetails)
 router.delete('/bus/:busNumber', deleteBusByBusNumber)
 
 //get buses by route number
-router.get('/bus/routenumber/:routeNumber',getBusesByRouteNumber)
+router.get('/bus/routenumber/:routeNumber', getBusesByRouteNumber)
 
 //bus status update using bus number
-router.put('/bus/status/:busNumber',updateBusStatus)
+router.put('/bus/status/:busNumber', updateBusStatus)
 
+router.get('/totalBuses', countTotalBuses)
+
+router.get('/activeBuses', activeBuses)
+
+router.get('/nonActiveBuses', nonActiveBuses)
 
 
 export default router;

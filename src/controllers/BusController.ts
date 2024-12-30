@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import BusModel from "../models/BusModel";
 import BusRouteModel from "../models/BusRouteModel";
+import exp from "constants";
 
 // @note tested the code and created documentation
 
@@ -59,6 +60,49 @@ export const getBusByBusNumber = async (req: Request, res: Response): Promise<vo
                 error: error.message || "Internal Server Error",
             })
         }
+    }
+}
+
+//count total buses
+export const countTotalBuses = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const totalBuses = await BusModel.countDocuments() // Count total buses in the collection
+
+        res.status(200).json({ totalBuses }) // Respond with count
+    } catch (error: any) {
+        res.status(500).json({
+            message: "An error occurred while counting total buses.",
+            error: error?.message || "Internal Server Error",
+        })
+    }
+}
+
+
+//count active buses
+export const activeBuses = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const activeBuses = await BusModel.countDocuments({ status: true }) // Count active buses
+
+        res.status(200).json({ activeBuses }) // Respond with count
+    } catch (error: any) {
+        res.status(500).json({
+            message: "An error occurred while counting active buses.",
+            error: error?.message || "Internal Server Error",
+        })
+    }
+}
+
+//count non-active buses
+export const nonActiveBuses = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const nonActiveBuses = await BusModel.countDocuments({ status: false }) // Count non-active buses
+
+        res.status(200).json({ nonActiveBuses }) // Respond with count
+    } catch (error: any) {
+        res.status(500).json({
+            message: "An error occurred while counting non-active buses.",
+            error: error?.message || "Internal Server Error",
+        })
     }
 }
 

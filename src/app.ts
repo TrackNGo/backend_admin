@@ -34,7 +34,6 @@ app.use('/api-bustimetable',busTimeTable)
 // Middleware set
 //app.use(AuthMiddleware)
 
-
 app.listen(PORT,()=>{
     console.log(`Server is running on http://localhost:${PORT}`)
 })

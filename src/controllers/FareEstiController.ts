@@ -1,57 +1,30 @@
 import { Request, Response } from "express";
-import BusRouteModel from "../models/BusRouteModel";
+import FareEstimate from "../models/FareEstimateModel";
 
 // Add a fare between two stops on the bus route
-export const addFareToRoute = async (req: Request,res: Response): Promise<any> => {
+export const addFareToRoute = async (req: Request, res: Response): Promise<any> => {
     const { busNumber, startStopIndex, endStopIndex, fare } = req.body;
 
     try {
         // Validate the inputs
-        if (
-            !busNumber ||
-            startStopIndex === undefined ||
-            endStopIndex === undefined ||
-            fare === undefined
-        ) {
-            return res.status(400).json({message:"Please provide all required fields: busNumber, startStopIndex, endStopIndex, and fare",});
+        if (!busNumber || startStopIndex === undefined || endStopIndex === undefined || fare === undefined) {
+            return res.status(400).json({ message: "Please provide all required fields: busNumber, startStopIndex, endStopIndex, and fare" });
         }
 
-        // Fetch the bus route by bus number
-        const busRoute = await BusRouteModel.findOne({ busNumber });
-
-        if (!busRoute) {
-            return res.status(404).json({ message: "Bus not found" });
-        }
-
-        // Validate stop indices
-        if (
-            startStopIndex < 0 ||
-            endStopIndex < 0 ||
-            startStopIndex >= busRoute.routeStops.length ||
-            endStopIndex >= busRoute.routeStops.length
-        ) {
-            return res.status(400).json({ message: "Invalid stop indices" });
-        }
-
-        // Set the fare for the stops
-        const startIndex = Math.min(startStopIndex, endStopIndex);
-        const endIndex = Math.max(startStopIndex, endStopIndex);
-
-        // Fill fareDetails array for the given stop range
-        for (let i = startIndex; i < endIndex; i++) {
-            busRoute.fareDetails[i] = fare;
-        }
-
-        // Save the updated bus route
-        await busRoute.save();
-
-        res.status(200).json({
-            message: "Fare added to route successfully",
-            fareDetails: busRoute.fareDetails,
+        // Create a new fare estimate entry
+        const newFareEstimate = new FareEstimate({
+            busNumber,
+            startStopIndex,
+            endStopIndex,
+            fare,
         });
+
+        await newFareEstimate.save();
+
+        res.status(201).json({ message: "Fare added to route successfully", fareDetails: newFareEstimate });
     } catch (error: any) {
         console.error("Error adding fare to route:", error);
-        res.status(500).json({message: "An error occurred while adding fare to route",error: error.message || "Internal Server Error",});
+        res.status(500).json({ message: "An error occurred while adding fare to route", error: error.message || "Internal Server Error" });
     }
 };
 
@@ -67,7 +40,7 @@ export const deleteFareForStop = async (req: Request, res: Response): Promise<an
         }
 
         // Fetch the bus route by bus number
-        const busRoute = await BusRouteModel.findOne({ busNumber });
+        const busRoute = await FareEstimate.findOne({ busNumber });
 
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus not found' });
@@ -103,7 +76,7 @@ export const updateFareForStop = async (req: Request, res: Response): Promise<an
         }
 
         // Fetch the bus route by bus number
-        const busRoute = await BusRouteModel.findOne({ busNumber });
+        const busRoute = await FareEstimate.findOne({ busNumber });
 
         if (!busRoute) {
             return res.status(404).json({ message: 'Bus not found' });

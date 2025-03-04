@@ -56,38 +56,29 @@ export const deleteFareForStop = async (req: Request, res: Response): Promise<an
 
 // Update fare for a specific stop
 export const updateFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, stopIndex, newFare } = req.body;
+    const { busNumber, startStopIndex, endStopIndex, newFare } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || stopIndex === undefined || newFare === undefined) {
-            return res.status(400).json({ message: 'Please provide busNumber, stopIndex, and newFare' });
+        if (!busNumber || startStopIndex === undefined || endStopIndex === undefined || newFare === undefined) {
+            return res.status(400).json({ message: "Please provide busNumber, startStopIndex, endStopIndex, and newFare" });
         }
 
-        // Fetch the bus route by bus number
-        const busRoute = await FareEstimate.findOne({ busNumber });
+        // Update the fare estimate entry
+        const updatedFare = await FareEstimate.findOneAndUpdate(
+            { busNumber, startStopIndex, endStopIndex },
+            { fare: newFare },
+            { new: true }
+        );
 
-        if (!busRoute) {
-            return res.status(404).json({ message: 'Bus not found' });
+        if (!updatedFare) {
+            return res.status(404).json({ message: "Fare not found" });
         }
 
-        // Validate the stop index
-        if (stopIndex < 0 || stopIndex >= busRoute.fareDetails.length) {
-            return res.status(400).json({ message: 'Invalid stop index' });
-        }
-
-        // Update the fare for the specific stop
-        busRoute.fareDetails[stopIndex] = newFare;
-
-        // Save the updated bus route
-        await busRoute.save();
-
-        res.status(200).json({ message: 'Fare updated successfully for stop', fareDetails: busRoute.fareDetails, });
+        res.status(200).json({ message: "Fare updated successfully", fareDetails: updatedFare });
     } catch (error: any) {
-        console.error('Error updating fare for stop:', error);
-        res.status(500).json({
-            message: 'An error occurred while updating fare for stop', error: error.message || 'Internal Server Error',
-        });
+        console.error("Error updating fare for stop:", error);
+        res.status(500).json({ message: "An error occurred while updating fare for stop", error: error.message || "Internal Server Error" });
     }
 };
 

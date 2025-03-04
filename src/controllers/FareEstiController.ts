@@ -31,36 +31,25 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
 
 // Delete fare details for a specific stop
 export const deleteFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, stopIndex } = req.body;
+    const { busNumber, startStopIndex, endStopIndex } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || stopIndex === undefined) {
-            return res.status(400).json({ message: 'Please provide busNumber and stopIndex' });
+        if (!busNumber || startStopIndex === undefined || endStopIndex === undefined) {
+            return res.status(400).json({ message: "Please provide busNumber, startStopIndex, and endStopIndex" });
         }
 
-        // Fetch the bus route by bus number
-        const busRoute = await FareEstimate.findOne({ busNumber });
+        // Delete the fare estimate entry
+        const deletedFare = await FareEstimate.findOneAndDelete({ busNumber, startStopIndex, endStopIndex });
 
-        if (!busRoute) {
-            return res.status(404).json({ message: 'Bus not found' });
+        if (!deletedFare) {
+            return res.status(404).json({ message: "Fare not found" });
         }
 
-        // Validate the stop index
-        if (stopIndex < 0 || stopIndex >= busRoute.fareDetails.length) {
-            return res.status(400).json({ message: 'Invalid stop index' });
-        }
-
-        // Remove the fare for the specific stop (set to 0 or null)
-        busRoute.fareDetails[stopIndex] = 0;
-
-        // Save the updated bus route
-        await busRoute.save();
-
-        res.status(200).json({message: 'Fare deleted successfully for stop',fareDetails: busRoute.fareDetails,});
+        res.status(200).json({ message: "Fare deleted successfully" });
     } catch (error: any) {
-        console.error('Error deleting fare for stop:', error);
-        res.status(500).json({message: 'An error occurred while deleting fare for stop',error: error.message || 'Internal Server Error',});
+        console.error("Error deleting fare for stop:", error);
+        res.status(500).json({ message: "An error occurred while deleting fare for stop", error: error.message || "Internal Server Error" });
     }
 };
 
@@ -93,10 +82,11 @@ export const updateFareForStop = async (req: Request, res: Response): Promise<an
         // Save the updated bus route
         await busRoute.save();
 
-        res.status(200).json({message: 'Fare updated successfully for stop',fareDetails: busRoute.fareDetails,});
+        res.status(200).json({ message: 'Fare updated successfully for stop', fareDetails: busRoute.fareDetails, });
     } catch (error: any) {
         console.error('Error updating fare for stop:', error);
-        res.status(500).json({message: 'An error occurred while updating fare for stop',error: error.message || 'Internal Server Error',
+        res.status(500).json({
+            message: 'An error occurred while updating fare for stop', error: error.message || 'Internal Server Error',
         });
     }
 };

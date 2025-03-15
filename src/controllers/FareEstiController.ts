@@ -14,9 +14,11 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
         // Create a new fare estimate entry
         const newFareEstimate = new FareEstimate({
             busNumber,
-            startStopIndex,
-            endStopIndex,
-            fare,
+            routeNumber,
+            busType,
+            startStop,
+            endStop,
+            estimatedFare,
         });
 
         await newFareEstimate.save();

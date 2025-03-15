@@ -30,7 +30,6 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
     }
 };
 
-
 // Delete fare details for a specific stop
 export const deleteFareForStop = async (req: Request, res: Response): Promise<any> => {
     const { busNumber, routeNumber, startStop, endStop } = req.body;
@@ -54,7 +53,6 @@ export const deleteFareForStop = async (req: Request, res: Response): Promise<an
         res.status(500).json({ message: "An error occurred while deleting fare for stop", error: error.message || "Internal Server Error" });
     }
 };
-
 
 // Update fare for a specific stop
 export const updateFareForStop = async (req: Request, res: Response): Promise<any> => {
@@ -83,5 +81,3 @@ export const updateFareForStop = async (req: Request, res: Response): Promise<an
         res.status(500).json({ message: "An error occurred while updating fare for stop", error: error.message || "Internal Server Error" });
     }
 };
-
-

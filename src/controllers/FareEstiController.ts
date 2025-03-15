@@ -47,53 +47,56 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
 };
 
 // Delete fare details for a specific stop
-export const deleteFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { routeNumber, busType, startStop, endStop } = req.body;
-
+export const deleteFareEstimate = async (req: Request, res: Response): Promise<any> => {
     try {
-        // Validate the inputs
-        if (!routeNumber || !busType || !startStop || !endStop) {
-            return res.status(400).json({ message: "Please provide routeNumber, busType, startStop, and endStop" });
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: "Missing ID parameter" });
         }
 
-        // Delete the fare estimate entry
-        const deletedFare = await FareEstimate.findOneAndDelete({ routeNumber, busType, startStop, endStop });
+        const deletedFare = await FareEstimate.findByIdAndDelete(id);
 
         if (!deletedFare) {
-            return res.status(404).json({ message: "Fare not found" });
+            return res.status(404).json({ message: "Fare Estimate not found" });
         }
 
-        res.status(200).json({ message: "Fare deleted successfully" });
+        res.status(200).json({ message: "Fare Estimate deleted successfully" });
     } catch (error: any) {
-        console.error("Error deleting fare for stop:", error);
-        res.status(500).json({ message: "An error occurred while deleting fare for stop", error: error.message || "Internal Server Error" });
+        console.error("Error deleting fare estimate:", error);
+        res.status(500).json({ message: "Error deleting fare estimate", error: error.message });
     }
-};
+}
+
+export const getFareEstimateById=async(req:Request,res:Response):Promise<any>=>{
+    try{
+        const{id}=req.params;
+        const fareEstimate=await FareEstimate.findById(id);
+        if(!fareEstimate){
+            return res.status(404).json({message:"Fare Estimate not found"});
+        }
+        res.status(200).json(fareEstimate);
+    }catch(error:any){
+        console.error("Error fetching fare estimate by ID:",error);
+        res.status(500).json({message:"Error fetching fare estimate by ID",error:error.message});
+    }
+}
 
 // Update fare for a specific stop
-export const updateFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { routeNumber, busType, startStop, endStop, estimatedFare } = req.body;
-
+export const updateFareEstimate = async (req: Request, res: Response): Promise<any> => {
     try {
-        // Validate the inputs
-        if (!routeNumber || !busType || !startStop || !endStop || estimatedFare === undefined) {
-            return res.status(400).json({ message: "Please provide routeNumber, busType, startStop, endStop, and estimatedFare" });
-        }
+        const { id } = req.params;
+        const updateData = req.body;
 
-        // Update the fare estimate entry
-        const updatedFare = await FareEstimate.findOneAndUpdate(
-            { routeNumber, busType, startStop, endStop },
-            { estimatedFare },
-            { new: true }
-        );
+        const updatedFare = await FareEstimate.findByIdAndUpdate(id, updateData, { new: true });
 
         if (!updatedFare) {
-            return res.status(404).json({ message: "Fare not found" });
+            return res.status(404).json({ message: "Fare Estimate not found" });
         }
 
-        res.status(200).json({ message: "Fare updated successfully", fareDetails: updatedFare });
+        res.status(200).json({ message: "Fare Estimate updated successfully", updatedFare });
     } catch (error: any) {
-        console.error("Error updating fare for stop:", error);
-        res.status(500).json({ message: "An error occurred while updating fare for stop", error: error.message || "Internal Server Error" });
+        console.error("Error updating fare estimate:", error);
+        res.status(500).json({ message: "Error updating fare estimate", error: error.message });
     }
-};
+}

@@ -58,12 +58,12 @@ export const deleteFareForStop = async (req: Request, res: Response): Promise<an
 
 // Update fare for a specific stop
 export const updateFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, startStopIndex, endStopIndex, newFare } = req.body;
+    const { busNumber, routeNumber, startStop, endStop, estimatedFare } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || startStopIndex === undefined || endStopIndex === undefined || newFare === undefined) {
-            return res.status(400).json({ message: "Please provide busNumber, startStopIndex, endStopIndex, and newFare" });
+        if (!busNumber || !routeNumber || !startStop || !endStop || estimatedFare === undefined) {
+            return res.status(400).json({ message: "Please provide busNumber, routeNumber, startStop, endStop, and estimatedFare" });
         }
 
         // Update the fare estimate entry

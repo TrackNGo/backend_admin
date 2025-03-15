@@ -4,7 +4,7 @@ export interface FareEstimate extends Document {
     routeNumber: string;  
     startStop: string;
     endStop: string;
-    estimatedFare: number;
+    estimatedFare: string;
     busType: 'Normal' | 'Semi-Luxury' | 'Luxury'; 
 }
 

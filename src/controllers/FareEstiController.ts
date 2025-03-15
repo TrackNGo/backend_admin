@@ -33,12 +33,12 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
 
 // Delete fare details for a specific stop
 export const deleteFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, startStopIndex, endStopIndex } = req.body;
+    const { busNumber, routeNumber, startStop, endStop } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || startStopIndex === undefined || endStopIndex === undefined) {
-            return res.status(400).json({ message: "Please provide busNumber, startStopIndex, and endStopIndex" });
+        if (!busNumber || !routeNumber || !startStop || !endStop) {
+            return res.status(400).json({ message: "Please provide busNumber, routeNumber, startStop, and endStop" });
         }
 
         // Delete the fare estimate entry

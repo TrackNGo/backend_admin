@@ -3,12 +3,12 @@ import FareEstimate from "../models/FareEstimateModel";
 
 // Add a fare between two stops on the bus route
 export const addFareToRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, startStopIndex, endStopIndex, fare } = req.body;
+    const { busNumber, routeNumber, busType, startStop, endStop, estimatedFare } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || startStopIndex === undefined || endStopIndex === undefined || fare === undefined) {
-            return res.status(400).json({ message: "Please provide all required fields: busNumber, startStopIndex, endStopIndex, and fare" });
+        if (!busNumber || !routeNumber || !busType || !startStop || !endStop || estimatedFare === undefined) {
+            return res.status(400).json({ message: "Please provide all required fields: busNumber, routeNumber, busType, startStop, endStop, and estimatedFare" });
         }
 
         // Create a new fare estimate entry

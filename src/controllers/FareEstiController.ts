@@ -3,17 +3,16 @@ import FareEstimate from "../models/FareEstimateModel";
 
 // Add a fare between two stops on the bus route
 export const addFareToRoute = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, routeNumber, busType, startStop, endStop, estimatedFare } = req.body;
+    const { routeNumber, busType, startStop, endStop, estimatedFare } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || !routeNumber || !busType || !startStop || !endStop || estimatedFare === undefined) {
-            return res.status(400).json({ message: "Please provide all required fields: busNumber, routeNumber, busType, startStop, endStop, and estimatedFare" });
+        if (!routeNumber || !busType || !startStop || !endStop || estimatedFare === undefined) {
+            return res.status(400).json({ message: "Please provide all required fields: routeNumber, busType, startStop, endStop, and estimatedFare" });
         }
 
         // Create a new fare estimate entry
         const newFareEstimate = new FareEstimate({
-            busNumber,
             routeNumber,
             busType,
             startStop,
@@ -32,16 +31,16 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
 
 // Delete fare details for a specific stop
 export const deleteFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, routeNumber, startStop, endStop } = req.body;
+    const { routeNumber, busType, startStop, endStop } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || !routeNumber || !startStop || !endStop) {
-            return res.status(400).json({ message: "Please provide busNumber, routeNumber, startStop, and endStop" });
+        if (!routeNumber || !busType || !startStop || !endStop) {
+            return res.status(400).json({ message: "Please provide routeNumber, busType, startStop, and endStop" });
         }
 
         // Delete the fare estimate entry
-        const deletedFare = await FareEstimate.findOneAndDelete({ busNumber, routeNumber, startStop, endStop });
+        const deletedFare = await FareEstimate.findOneAndDelete({ routeNumber, busType, startStop, endStop });
 
         if (!deletedFare) {
             return res.status(404).json({ message: "Fare not found" });
@@ -56,17 +55,17 @@ export const deleteFareForStop = async (req: Request, res: Response): Promise<an
 
 // Update fare for a specific stop
 export const updateFareForStop = async (req: Request, res: Response): Promise<any> => {
-    const { busNumber, routeNumber, startStop, endStop, estimatedFare } = req.body;
+    const { routeNumber, busType, startStop, endStop, estimatedFare } = req.body;
 
     try {
         // Validate the inputs
-        if (!busNumber || !routeNumber || !startStop || !endStop || estimatedFare === undefined) {
-            return res.status(400).json({ message: "Please provide busNumber, routeNumber, startStop, endStop, and estimatedFare" });
+        if (!routeNumber || !busType || !startStop || !endStop || estimatedFare === undefined) {
+            return res.status(400).json({ message: "Please provide routeNumber, busType, startStop, endStop, and estimatedFare" });
         }
 
         // Update the fare estimate entry
         const updatedFare = await FareEstimate.findOneAndUpdate(
-            { busNumber, routeNumber, startStop, endStop },
+            { routeNumber, busType, startStop, endStop },
             { estimatedFare },
             { new: true }
         );

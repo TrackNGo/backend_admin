@@ -7,6 +7,10 @@ const fareEstimateSchema = new Schema<FareEstimate>(
             type: String,
             required: true,
         },
+        routeNumber: {  
+            type: String,
+            required: true,
+        },
         startStop: {
             type: String,
             required: true,
@@ -17,6 +21,11 @@ const fareEstimateSchema = new Schema<FareEstimate>(
         },
         estimatedFare: {
             type: Number,
+            required: true,
+        },
+        busType: {  
+            type: String,
+            enum: ['Normal', 'Semi-Luxury', 'Luxury'],
             required: true,
         },
     },

@@ -29,7 +29,7 @@ app.use('/api-bus', busRoutes)
 app.use('/api-busroutes', busRouteRoutes)
 app.use('/api-lostnFound', lostnFound)
 app.use('/api-bustimetable',busTimeTable)
-// app.use('/api-busFare', busFare)
+app.use('/api-fare', busFare)
 
 // Middleware set
 //app.use(AuthMiddleware)

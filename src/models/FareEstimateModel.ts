@@ -16,7 +16,7 @@ const fareEstimateSchema = new Schema<FareEstimate>(
             required: true,
         },
         estimatedFare: {
-            type: Number,
+            type: String,
             required: true,
         },
         busType: {  

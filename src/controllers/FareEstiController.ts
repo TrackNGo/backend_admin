@@ -42,7 +42,7 @@ export const deleteFareForStop = async (req: Request, res: Response): Promise<an
         }
 
         // Delete the fare estimate entry
-        const deletedFare = await FareEstimate.findOneAndDelete({ busNumber, startStopIndex, endStopIndex });
+        const deletedFare = await FareEstimate.findOneAndDelete({ busNumber, routeNumber, startStop, endStop });
 
         if (!deletedFare) {
             return res.status(404).json({ message: "Fare not found" });

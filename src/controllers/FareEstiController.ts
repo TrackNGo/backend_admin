@@ -68,8 +68,8 @@ export const updateFareForStop = async (req: Request, res: Response): Promise<an
 
         // Update the fare estimate entry
         const updatedFare = await FareEstimate.findOneAndUpdate(
-            { busNumber, startStopIndex, endStopIndex },
-            { fare: newFare },
+            { busNumber, routeNumber, startStop, endStop },
+            { estimatedFare },
             { new: true }
         );
 

@@ -3,10 +3,6 @@ import FareEstimate from "../interfaces/fareEstimate";
 
 const fareEstimateSchema = new Schema<FareEstimate>(
     {
-        busNumber: {
-            type: String,
-            required: true,
-        },
         routeNumber: {  
             type: String,
             required: true,

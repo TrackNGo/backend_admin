@@ -1,5 +1,5 @@
 import express from 'express';
-import { addFareToRoute, deleteFareForStop, getFareEstimates, updateFareForStop } from '../controllers/FareEstiController';
+import { addFareToRoute, deleteFareEstimate, getFareEstimates, updateFareEstimate,getFareEstimateById } from '../controllers/FareEstiController';
 
 const router = express.Router();
 
@@ -8,10 +8,12 @@ router.post('/add', addFareToRoute);
 
 router.get('/view', getFareEstimates)
 
+router.get('/view/:id', getFareEstimateById)
+
 // Route to delete fare for a specific stop on the bus route
-router.delete('/delete', deleteFareForStop);
+router.delete('/delete/:id', deleteFareEstimate);
 
 // Route to update fare for a specific stop on the bus route
-router.put('/update', updateFareForStop);
+router.put('/update/:id', updateFareEstimate);
 
 export default router;

@@ -1,7 +1,6 @@
 import { Document } from "mongoose";
 
 export interface FareEstimate extends Document {
-    busNumber: string;
     routeNumber: string;  
     startStop: string;
     endStop: string;

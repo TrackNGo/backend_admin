@@ -9,6 +9,7 @@ import busRouteRoutes from './routes/BusRoutesRoute'
 import busFare from './routes/FareRoute'
 import lostnFound from './routes/LostnFoundRoute'
 import busTimeTable from './routes/TimeTableRoute'
+import reportRoutes from './routes/ReportRoute'
 import cors from 'cors'
 
 import { AuthMiddleware } from './middleware/AuthMiddleware'
@@ -30,6 +31,7 @@ app.use('/api-busroutes', busRouteRoutes)
 app.use('/api-lostnFound', lostnFound)
 app.use('/api-bustimetable',busTimeTable)
 app.use('/api-fare', busFare)
+app.use('/api-report', reportRoutes)
 
 // Middleware set
 //app.use(AuthMiddleware)

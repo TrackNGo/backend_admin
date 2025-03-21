@@ -71,8 +71,8 @@ export const getTimeTableByLocations = async (req: Request, res: Response): Prom
             endLocation
         });
 
-        if (!timeTables.length) {
-            return res.status(404).json({ message: "No time tables found for the specified locations" });
+        if (timeTables.length == 0) {
+            return res.status(200).json({ message: "No time tables found for the specified locations" });
         }
 
         res.status(200).json(timeTables);

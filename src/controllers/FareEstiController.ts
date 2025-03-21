@@ -46,6 +46,31 @@ export const addFareToRoute = async (req: Request, res: Response): Promise<any> 
     }
 };
 
+export const searchFareEstimateByLocations = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { startLocation, endLocation } = req.query;
+
+        if (!startLocation || !endLocation) {
+            return res.status(400).json({ message: "Start location and end location are required" });
+        }
+        
+        const fareEstimates = await FareEstimate.find({
+            startStop: startLocation,
+            endStop: endLocation
+        });
+
+        if (fareEstimates.length === 0) {
+            return res.status(200).json({ message: "No fare estimates found" })
+        }
+
+        res.status(200).json({ fareEstimates });
+    }
+    catch (error: any) {
+        console.error("Error fetching fare estimates:", error);
+        res.status(500).json({ message: "An error occurred while fetching fare estimates", error: error.message || "Internal Server Error" });
+    }
+}
+
 // Delete fare details for a specific stop
 export const deleteFareEstimate = async (req: Request, res: Response): Promise<any> => {
     try {

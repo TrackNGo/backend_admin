@@ -29,22 +29,25 @@ export const getReportById = async (req: Request, res: Response): Promise<void> 
 };
 
 
-export const deleteReport = async (req: Request, res: Response): Promise<Response> => {
+export const deleteReport = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     try {
         const deletedReport = await ReportModel.findByIdAndDelete(id);
         if (!deletedReport) {
-            return res.status(404).json({ message: "Report not found" });
+            res.status(404).json({ message: "Report not found" });
+            return;
         }
-        return res.status(200).json({ message: "Report deleted successfully" });
+        res.status(200).json({ message: "Report deleted successfully" });
+        return;
     } catch (error) {
         console.error("Error deleting report:", error);
-        return res.status(500).json({ message: "Failed to delete report" });
+        res.status(500).json({ message: "Failed to delete report" });
+        return;
     }
 };
 
 
-export const addCommentToReport = async (req: Request, res: Response): Promise<Response> => {
+export const addCommentToReport = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const { comment } = req.body;
     
@@ -56,11 +59,14 @@ export const addCommentToReport = async (req: Request, res: Response): Promise<R
         );
         
         if (!updatedReport) {
-            return res.status(404).json({ message: "Report not found" });
+            res.status(404).json({ message: "Report not found" });
+            return;
         }
-        return res.status(200).json({ report: updatedReport });
+        res.status(200).json({ report: updatedReport });
+        return;
     } catch (error) {
         console.error("Error adding comment:", error);
-        return res.status(500).json({ message: "Failed to add comment" });
+        res.status(500).json({ message: "Failed to add comment" });
+        return;
     }
 };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllReports, getReportById} from '../controllers/ReportController';
+import { getAllReports, getReportById,deleteReport,addCommentToReport} from '../controllers/ReportController';
 
 const router = express.Router();
 
@@ -8,5 +8,9 @@ router.get('/view', getAllReports);
 
 // Route to get a specific report by ID
 router.get('/view/:id', getReportById);
+
+router.delete('/delete/:id', deleteReport);
+
+router.put('/comment/:id', addCommentToReport);
 
 export default router;

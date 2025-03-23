@@ -7,6 +7,7 @@ const ReportSchema = new Schema<Report>({
     description: { type: String, required: true },
     reportedAt: { type: Date, default: Date.now },
     contactDetails: { type: String, required: false },
+    adminComment: { type: String, required: false },
 });
 
 const ReportModel = mongoose.model<Report>("Report", ReportSchema);

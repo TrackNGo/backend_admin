@@ -6,6 +6,7 @@ interface Report extends Document {
     description: string;
     reportedAt?: Date;
     contactDetails?: string;
+    adminComment?: string;
 }
 
 export default Report

@@ -4,8 +4,9 @@ interface Report extends Document {
     busNumber: string;
     issueType: string;
     description: string;
-    contactDetails: string;
-    createdAt: Date;
+    reportedAt?: Date;
+    contactDetails?: string;
+    adminComment?: string;
 }
 
 export default Report

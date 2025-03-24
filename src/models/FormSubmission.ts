@@ -5,12 +5,19 @@ export enum FormType {
     TECHNICAL = 'technical'
 }
 
-interface BaseFormSubmission extends Document {
-    formType: FormType;
-    submittedAt: Date;
+interface Comment {
+    text: string;
+    adminName: string;
+    createdAt: Date;
 }
 
-export interface BusServiceSubmission extends BaseFormSubmission {
+interface BaseContactSubmission extends Document {
+    formType: FormType;
+    submittedAt: Date;
+    comments: Comment[];
+}
+
+export interface BusServiceSubmission extends BaseContactSubmission {
     formType: FormType.BUS_SERVICE;
     busNumber: string;
     ownerName: string;
@@ -19,7 +26,7 @@ export interface BusServiceSubmission extends BaseFormSubmission {
     routeDetails: string;
 }
 
-export interface TechnicalSubmission extends BaseFormSubmission {
+export interface TechnicalSubmission extends BaseContactSubmission {
     formType: FormType.TECHNICAL;
     name: string;
     email: string;
@@ -27,9 +34,9 @@ export interface TechnicalSubmission extends BaseFormSubmission {
     description: string;
 }
 
-export type FormSubmission = BusServiceSubmission | TechnicalSubmission;
+export type ContactSubmission = BusServiceSubmission | TechnicalSubmission;
 
-const formSubmissionSchema = new Schema({
+const contactSubmissionSchema = new Schema({
     formType: { type: String, enum: Object.values(FormType), required: true },
     submittedAt: { type: Date, default: Date.now },
     // Bus Service fields
@@ -42,7 +49,13 @@ const formSubmissionSchema = new Schema({
     name: { type: String },
     email: { type: String },
     issueType: { type: String },
-    description: { type: String }
+    description: { type: String },
+    // Comments
+    comments: [{
+        text: { type: String, required: true },
+        adminName: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }
+    }]
 }, { discriminatorKey: 'formType' });
 
-export default mongoose.model<FormSubmission>('FormSubmission', formSubmissionSchema);
+export default mongoose.model<ContactSubmission>('ContactSubmission', contactSubmissionSchema);

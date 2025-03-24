@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import FormSubmission from '../models/FormSubmission';
+import FormSubmission from '../models/FormSubmissionModel';
 
 export const getAllSubmissions = async (req: Request, res: Response): Promise<void> => {
     try {

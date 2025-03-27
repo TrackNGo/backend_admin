@@ -50,6 +50,11 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
+        if(otherData.accType == 'General' && !otherData.busNumber) {
+            res.status(400).json({ error: "Missing required field" });
+            return;
+        }
+
         if (!password) {
             res.status(400).json({ error: "Missing Password Field" });
             return;
@@ -104,6 +109,30 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const filter = generateFilter(param);
         const user = await UserModel.findOne(filter).select("-password");
+
+        if (!user) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        res.json({ user });
+    } catch (error: any) {
+        console.error("Error fetching user:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+//Get user by busNumber
+export const getUserByBusNumber = async (req: Request, res: Response): Promise<void> => {
+    const { busNumber } = req.params;
+
+    if (!busNumber) {
+        res.status(400).json({ error: "Parameter is required" });
+        return;
+    }
+
+    try {
+        const user = await UserModel.findOne({busNumber : busNumber}).select("-password");
 
         if (!user) {
             res.status(404).json({ message: "User not found" });

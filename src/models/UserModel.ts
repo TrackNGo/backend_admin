@@ -3,6 +3,9 @@ import UserDetails from "../interfaces/UserDetails";
 
 const userSchema = new Schema<UserDetails>(
     {
+        busNumber: {
+            type: String
+        },
         nic: {
             type: String,
             required: true,

@@ -19,12 +19,13 @@ export const Login: RequestHandler = async (req: Request, res: Response) => {
                 {
                     $or: [
                         { username: loginIdentifier },
-                        { mobile: loginIdentifier },
+                        { busNumber: loginIdentifier },
                     ],
                 },
                 { accType: accType },
             ],
         });
+
         
         if (!user) {
             res.status(404).json({ message: "User not found" });
@@ -52,6 +53,7 @@ export const Login: RequestHandler = async (req: Request, res: Response) => {
             message: "Login successful",
             token,
             user: {
+                busNumber: user.busNumber, 
                 id: user._id,
                 username: user.username,
                 accType: user.accType,

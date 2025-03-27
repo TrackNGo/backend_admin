@@ -1,6 +1,7 @@
 import { Document } from "mongoose";
 
 interface UserDetails extends Document {
+    busNumber: string,
     nic: string;
     username: string;
     firstName: string;

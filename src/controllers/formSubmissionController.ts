@@ -1,11 +1,6 @@
-<<<<<<< Updated upstream
-import { Request, Response } from 'express';
-import FormSubmission from '../models/FormSubmissionModel';
-=======
-// src/controllers/submissionController.ts
 import { RequestHandler } from "express";
 import FormSubmission from "../models/FormSubmission";
->>>>>>> Stashed changes
+
 
 export const getAllSubmissions: RequestHandler = async (req, res) => {
   try {

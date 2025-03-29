@@ -1,5 +1,5 @@
 import express from "express"
-import { createUser, getUser, getAllUsers, updateUser, deleteUser, getUserByBusNumber } from "../controllers/UserController"
+import { createUser, getUser, getAllUsers, updateUser, deleteUser, getUserByBusNumber, changeConductorPassword } from "../controllers/UserController"
 
 const router = express.Router()
 
@@ -20,5 +20,8 @@ router.put("/update/:param", updateUser)
 
 // Delete a specific user by ID, NIC, or username
 router.delete("/delete/:param", deleteUser)
+
+//change conductor password
+router.put("/change-password", changeConductorPassword)
 
 export default router

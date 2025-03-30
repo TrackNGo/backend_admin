@@ -14,13 +14,21 @@ export const createBusRoute = async (req: Request, res: Response): Promise<any> 
 
         // Check if bus route already exists
         const existingRoute = await BusRouteModel.findOne({ busNumber, routeNumber });
+        
         if (existingRoute) {
-            return res.status(409).json({ message: 'Route already exists for the bus' });
+            const updatedBusRoute = await BusRouteModel.updateOne(
+                { busNumber: busNumber },
+                { $set: { routeNumber: routeNumber, startLocation: startLocation, endLocation: endLocation, routeStops: routeStops } }
+            )
+            res.status(201).json({ message: 'Bus route updated successfully', busRoute: updatedBusRoute });
         }
-        // Create and save new bus route
-        const newBusRoute = new BusRouteModel({ busNumber, routeNumber, startLocation, endLocation, routeStops });
-        await newBusRoute.save();
-        res.status(201).json({ message: 'Bus route created successfully', busRoute: newBusRoute });
+        else {
+
+            // Create and save new bus route
+            const newBusRoute = new BusRouteModel({ busNumber, routeNumber, startLocation, endLocation, routeStops });
+            await newBusRoute.save();
+            res.status(201).json({ message: 'Bus route created successfully', busRoute: newBusRoute });
+        }
     } catch (error: any) {
         res.status(500).json({
             message: 'An error occurred while creating the bus route.', error: error.message || 'Internal Server Error',

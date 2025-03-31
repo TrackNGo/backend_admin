@@ -252,3 +252,41 @@ export const changeConductorPassword = async (req: Request, res: Response): Prom
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
+export const changeAdminPassword = async (req: Request, res: Response): Promise<void> => {
+    const { userName, password } = req.body;
+    
+    try {
+    
+        if (!userName && !password) {
+            res.status(400).json({ error: "All details is required" });
+            return;
+        }
+
+        if (!isValidPassword(password)) {
+            res.status(200).json({
+                error: "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.",
+            });
+            return;
+        }
+
+        const response = await UserModel.findOne({
+            username: userName
+        })
+
+        if (!response) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        response.password = hashedPassword;
+
+        await response.save()
+
+        res.json({ message: "Change user Password success..."});
+    } catch (error: any) {
+        res.status(500).json({ error: "Internal server error" });
+    }
+}

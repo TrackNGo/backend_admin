@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import BusModel from "../models/BusModel";
 import BusRouteModel from "../models/BusRouteModel";
 import exp from "constants";
+import BusLocation from "../models/busLocationModel";
 
 // @note tested the code and created documentation
 
@@ -148,8 +149,15 @@ export const addBus = async (req: Request, res: Response): Promise<any> => {
             status,
         });
 
+        const newBusLocationModel = new BusLocation({
+            busNumber:busNumber,
+            latitude:0,
+            longitude:0
+        })
+
         // Save the new bus to the database
         await newBus.save();
+        await newBusLocationModel.save()
 
         // Automatically create a bus route using the same bus details (routeStops is optional)
         const newBusRoute = new BusRouteModel({
